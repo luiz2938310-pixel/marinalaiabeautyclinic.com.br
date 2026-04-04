@@ -1,7 +1,7 @@
 from flask import Flask, render_template, redirect, request, url_for, flash
 from flask_login import LoginManager, login_user, login_required, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
-from models import db, Admin, Servico, Agendamento, Estoque, Financeiro, HorarioFuncionamento, BloqueioData, HorarioEspecial
+from agenda_marina_pro.models import db, Admin, Servico, Agendamento, Estoque, Financeiro, HorarioFuncionamento, BloqueioData, HorarioEspecial
 from datetime import datetime, timedelta
 from sqlalchemy import func, extract
 
