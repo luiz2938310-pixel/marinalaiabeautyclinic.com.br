@@ -1,5 +1,0 @@
-Flask
-flask-login
-flask-sqlalchemy
-gunicorn
-werkzeug
