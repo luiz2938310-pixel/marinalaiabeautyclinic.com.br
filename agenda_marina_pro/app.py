@@ -70,8 +70,8 @@ with app.app_context():
 
     if not Admin.query.first():
         admin = Admin(
-            username="admin",
-            password=generate_password_hash("1234")
+            username="Marinalaia",
+            password=generate_password_hash("020820")
         )
         db.session.add(admin)
         db.session.commit()
