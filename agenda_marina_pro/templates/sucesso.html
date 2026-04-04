@@ -1,0 +1,90 @@
+﻿<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Agendamento Confirmado</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Poppins',sans-serif;
+            background: linear-gradient(135deg,#E6E6FA,#C8A2FF);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .card {
+            background: white;
+            padding: 40px;
+            border-radius: 25px;
+            text-align: center;
+            box-shadow: 0 25px 60px rgba(75,0,130,0.3);
+            animation: fade 0.5s ease;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .check {
+            font-size: 65px;
+            color: #28a745;
+            margin-bottom: 15px;
+        }
+
+        h2 {
+            color: #6A0DAD;
+        }
+
+        .contador {
+            margin-top: 20px;
+            font-size: 13px;
+            color: #777;
+        }
+
+        @keyframes fade {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="card">
+        <div class="check">✔</div>
+        <h2>Agendamento Confirmado!</h2>
+        <div class="contador">
+            Voltando para a página inicial em <span id="tempo">4</span> segundos...
+        </div>
+    </div>
+
+    <script>
+
+        let tempo = 4;
+        const contador = document.getElementById("tempo");
+
+        const intervalo = setInterval(() => {
+            tempo--;
+            contador.textContent = tempo;
+
+            if (tempo <= 0) {
+                clearInterval(intervalo);
+                window.location.href = "/";
+            }
+        }, 1000);
+
+    </script>
+
+</body>
+</html>

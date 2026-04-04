@@ -1,0 +1,174 @@
+﻿<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo | Marina Laia Beauty</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            background: linear-gradient(135deg, #E6E6FA, #C8A2FF, #9F7AEA);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* Card vidro */
+        .login-box {
+            width: 100%;
+            max-width: 380px;
+            padding: 40px 30px;
+            border-radius: 25px;
+            background: rgba(255,255,255,0.18);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 0 25px 60px rgba(75,0,130,0.35);
+            text-align: center;
+            color: white;
+            animation: fadeIn 0.7s ease;
+        }
+
+            .login-box h2 {
+                margin-bottom: 25px;
+                font-weight: 700;
+            }
+
+        /* Inputs */
+        .input-group {
+            position: relative;
+            margin-bottom: 18px;
+        }
+
+            .input-group input {
+                width: 100%;
+                padding: 14px 14px 14px 45px;
+                border-radius: 14px;
+                border: none;
+                outline: none;
+                font-size: 14px;
+                background: rgba(255,255,255,0.25);
+                color: white;
+                transition: 0.3s;
+            }
+
+                .input-group input::placeholder {
+                    color: rgba(255,255,255,0.8);
+                }
+
+                .input-group input:focus {
+                    background: rgba(255,255,255,0.35);
+                    box-shadow: 0 0 0 2px #6A0DAD;
+                }
+
+            /* Ícones */
+            .input-group span {
+                position: absolute;
+                left: 15px;
+                top: 50%;
+                transform: translateY(-50%);
+                font-size: 16px;
+                opacity: 0.8;
+            }
+
+        /* Botão */
+        button {
+            width: 100%;
+            padding: 14px;
+            border-radius: 16px;
+            border: none;
+            background: #6A0DAD;
+            color: white;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 10px 25px rgba(75,0,130,0.3);
+        }
+
+            button:hover {
+                background: #4B0082;
+                transform: translateY(-3px);
+            }
+
+        /* Mensagem de erro */
+        .error {
+            background: rgba(255,0,0,0.15);
+            color: #ffdddd;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            font-size: 13px;
+        }
+
+        /* Link voltar */
+        .back-link {
+            display: block;
+            margin-top: 20px;
+            font-size: 13px;
+            text-decoration: none;
+            color: #F8F6FF;
+            opacity: 0.8;
+        }
+
+            .back-link:hover {
+                opacity: 1;
+            }
+
+        /* Animação */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-box">
+
+        <h2>🔐 Acesso Administrativo</h2>
+
+        {% if error %}
+        <div class="error">{{ error }}</div>
+        {% endif %}
+
+        <form method="POST">
+
+            <div class="input-group">
+                <span>👤</span>
+                <input type="text" name="username" placeholder="Usuário" required>
+            </div>
+
+            <div class="input-group">
+                <span>🔒</span>
+                <input type="password" name="password" placeholder="Senha" required>
+            </div>
+
+            <button type="submit">Entrar no Painel</button>
+
+        </form>
+
+        <a href="/" class="back-link">← Voltar para o site</a>
+
+    </div>
+
+</body>
+</html>

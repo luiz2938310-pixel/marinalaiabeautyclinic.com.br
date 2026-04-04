@@ -1,0 +1,232 @@
+﻿<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Horário por Período - Studio PRO</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        /* RESET E BASE */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            background: #f4f6f8;
+            color: #1f2937;
+            overflow-x: hidden;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 240px;
+            height: 100vh;
+            background: #1f2937;
+            padding: 25px 20px;
+            position: fixed;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 3px 0 10px rgba(0,0,0,0.2);
+        }
+
+            .sidebar h2 {
+                color: #ffffff;
+                margin-bottom: 30px;
+                font-size: 1.7rem;
+                font-weight: 600;
+            }
+
+            .sidebar a {
+                display: block;
+                padding: 12px 15px;
+                margin-bottom: 12px;
+                border-radius: 8px;
+                background: #374151;
+                color: white;
+                text-decoration: none;
+                font-weight: 500;
+                transition: 0.3s;
+            }
+
+                .sidebar a:hover {
+                    background: #4b5563;
+                }
+
+        /* CONTEÚDO PRINCIPAL */
+        .content {
+            margin-left: 260px;
+            padding: 40px;
+            flex: 1;
+        }
+
+        /* CARD */
+        .card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+
+            .card h2 {
+                color: #111827;
+                margin-bottom: 25px;
+                text-align: center;
+                font-size: 1.8rem;
+            }
+
+        /* FORMULÁRIO */
+        form label {
+            display: block;
+            margin-top: 12px;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            background: #f9fafb;
+            margin-bottom: 15px;
+            font-size: 1rem;
+            transition: 0.3s;
+        }
+
+            input:focus, select:focus {
+                border-color: #3b82f6;
+                background: #ffffff;
+            }
+
+        /* BOTÃO */
+        .btn {
+            background: #3b82f6;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+            .btn:hover {
+                background: #2563eb;
+            }
+
+        /* DIVISÓRIA */
+        hr {
+            border: 0;
+            border-top: 1px solid #e5e7eb;
+            margin: 25px 0;
+        }
+
+        /* LISTA DE HORÁRIOS */
+        .item {
+            background: #f9fafb;
+            padding: 14px 16px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            border: 1px solid #e5e7eb;
+            font-size: 0.95rem;
+        }
+
+        .delete {
+            background: #ef4444;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+            .delete:hover {
+                background: #dc2626;
+            }
+
+        /* RESPONSIVO */
+        @media (max-width:768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+
+            .content {
+                margin-left: 0;
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2>Studio PRO</h2>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/admin/horarios">Horários</a>
+        <a href="/admin/horarios-especiais">Horário por Período</a>
+        <a href="/admin/bloqueios">Bloquear Datas</a>
+    </div>
+
+    <div class="content">
+        <div class="card">
+            <h2>Horário por Período</h2>
+
+            <form method="POST" action="/admin/horarios-especiais/add">
+                <label>Data início</label>
+                <input type="date" name="inicio" required>
+
+                <label>Data fim</label>
+                <input type="date" name="fim" required>
+
+                <label>Dia da semana</label>
+                <select name="dia_semana" required>
+                    <option value="">Selecione</option>
+                    <option value="0">Segunda</option>
+                    <option value="1">Terça</option>
+                    <option value="2">Quarta</option>
+                    <option value="3">Quinta</option>
+                    <option value="4">Sexta</option>
+                    <option value="5">Sábado</option>
+                    <option value="6">Domingo</option>
+                </select>
+
+                <label>Hora início</label>
+                <input type="time" name="hora_inicio" required>
+
+                <label>Hora fim</label>
+                <input type="time" name="hora_fim" required>
+
+                <button type="submit" class="btn">💾 Salvar</button>
+            </form>
+
+            <hr>
+
+            <h3>Horários cadastrados</h3>
+
+            {% set dias = ['Segunda','Terça','Quarta','Quinta','Sexta','Sábado','Domingo'] %}
+            {% for h in horarios %}
+            <div class="item">
+                <span>
+                    {{ h.data_inicio.strftime('%d/%m/%Y') }} até {{ h.data_fim.strftime('%d/%m/%Y') }}
+                    - Dia {{ dias[h.dia_semana] }} → {{ h.inicio }} às {{ h.fim }}
+                </span>
+                <a class="delete" href="/admin/horarios-especiais/excluir/{{ h.id }}">Excluir</a>
+            </div>
+            {% endfor %}
+
+        </div>
+    </div>
+
+</body>
+</html>

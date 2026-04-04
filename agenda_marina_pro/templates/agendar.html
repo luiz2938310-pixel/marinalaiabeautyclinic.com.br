@@ -1,0 +1,206 @@
+﻿<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Agendar Horário</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --lavanda: #E6E6FA;
+            --lavanda-medio: #C8A2FF;
+            --roxo: #6A0DAD;
+            --roxo-escuro: #4B0082;
+            --texto: #2D1B4E;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins',sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg,var(--lavanda),var(--lavanda-medio));
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 35px;
+            box-shadow: 0 25px 60px rgba(75,0,130,0.25);
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--roxo);
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-top: 18px;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: var(--texto);
+        }
+
+        input, select {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            border: 1px solid var(--lavanda-medio);
+            font-size: 14px;
+            outline: none;
+        }
+
+        small {
+            display: block;
+            margin-top: 5px;
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        .main-btn {
+            width: 100%;
+            margin-top: 25px;
+            padding: 15px;
+            border: none;
+            border-radius: 14px;
+            background: var(--roxo);
+            color: white;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+            .main-btn:hover {
+                background: var(--roxo-escuro);
+            }
+
+        .erro {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 10px;
+            background: #ffdede;
+            color: #a80000;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .info {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 10px;
+            background: #fff4cc;
+            color: #7a5a00;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        /* 🔥 destaque topo */
+        .topo {
+            background: #f3e8ff;
+            padding: 15px;
+            border-radius: 16px;
+            margin-bottom: 10px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h2>Agendar Horário</h2>
+
+        <form action="{{ url_for('agendar') }}" method="POST">
+
+            <!-- 🔥 DATA E HORÁRIO PRIMEIRO -->
+            <div class="topo">
+
+                <label>Data</label>
+                <input type="date"
+                       id="data"
+                       name="data"
+                       min="{{ hoje }}"
+                       value="{{ request.form.get('data','') }}"
+                       required>
+
+                <label>Horário</label>
+                <select name="hora" id="hora" required>
+                    <option value="">Selecione um horário</option>
+                    {% for h in horarios %}
+                    <option value="{{ h }}">{{ h }}</option>
+                    {% endfor %}
+                </select>
+
+            </div>
+
+            <!-- RESTO DO FORM -->
+            <label>Seu nome</label>
+            <input type="text" name="nome" placeholder="Digite seu nome" required>
+
+            <label>WhatsApp</label>
+            <input type="tel"
+                   name="telefone"
+                   id="telefone"
+                   placeholder="Ex: 32999887766"
+                   pattern="[0-9]{10,11}"
+                   required>
+
+            <small>Digite apenas números com DDD</small>
+
+            <label>Serviço</label>
+            <select name="servico" required>
+                <option value="">Selecione um serviço</option>
+                {% for servico in servicos %}
+                <option value="{{ servico.id }}">{{ servico.nome }}</option>
+                {% endfor %}
+            </select>
+
+            <button type="submit" class="main-btn">Confirmar Agendamento</button>
+
+        </form>
+
+        {% if bloqueado %}
+        <div class="info">
+            Este dia está fechado
+        </div>
+        {% endif %}
+
+        {% if erro %}
+        <div class="erro">{{ erro }}</div>
+        {% endif %}
+
+    </div>
+
+    <script>
+document.getElementById("telefone").addEventListener("input", function () {
+    this.value = this.value.replace(/\D/g, "");
+});
+
+const inputData = document.getElementById("data");
+const form = inputData.closest("form");
+
+inputData.addEventListener("change", function () {
+    form.submit();
+});
+    </script>
+
+</body>
+</html>
