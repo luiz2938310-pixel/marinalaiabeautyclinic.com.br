@@ -9,30 +9,21 @@ import os
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'super_chave_segura'
 
-# 🔥 CONFIG BANCO (ROBUSTO)
+# 🔥 CONFIG BANCO
 database_url = os.getenv("DATABASE_URL")
 
-# fallback local (evita crash no Render se variável falhar)
 if not database_url:
-    database_url = "sqlite:///agenda.db"
+    raise RuntimeError("DATABASE_URL não configurada!")
 
 app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# 🔐 SSL somente se for PostgreSQL (Supabase)
-if "postgresql" in database_url:
-    app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
-        "connect_args": {"sslmode": "require"}
-    }
+# 🔐 SSL pro Supabase
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+    "connect_args": {"sslmode": "require"}
+}
 
 db.init_app(app)
-
-# 🔧 CRIA AS TABELAS COM SEGURANÇA
-try:
-    with app.app_context():
-        db.create_all()
-except Exception as e:
-    print("Erro ao criar tabelas:", e)
 # =========================
 # GERAR HORÁRIOS DINÂMICO (CORRIGIDO)
 # =========================
