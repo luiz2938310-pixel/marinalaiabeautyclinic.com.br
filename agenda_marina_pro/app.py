@@ -4,12 +4,20 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from agenda_marina_pro.models import db, Admin, Servico, Agendamento, Estoque, Financeiro, HorarioFuncionamento, BloqueioData, HorarioEspecial
 from datetime import datetime, timedelta
 from sqlalchemy import func, extract
+import os
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'super_chave_segura'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///agenda.db'
+
+# 🔥 ALTERAÇÃO AQUI (BANCO POSTGRES)
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL")
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
+
+# 🔧 CRIA AS TABELAS NO BANCO NOVO
+with app.app_context():
+    db.create_all()
 # =========================
 # GERAR HORÁRIOS DINÂMICO (CORRIGIDO)
 # =========================
