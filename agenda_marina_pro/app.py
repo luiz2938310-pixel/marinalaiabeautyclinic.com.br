@@ -186,42 +186,37 @@ def agendar():
             if datetime.strptime(f"{data_obj} {h}", "%Y-%m-%d %H:%M") > agora
         ]
 
-    # remover horários ocupados
+    # =========================
+    # 🔥 VALIDAÇÃO CORRETA DE HORÁRIOS
+    # =========================
     if data_obj:
+
         agendamentos = Agendamento.query.filter_by(data=data_obj).all()
-        horarios_ocupados = []
+        horarios_validos = []
 
-        for ag in agendamentos:
-            servico = Servico.query.get(ag.servico_id)
-            if not servico:
-                continue
+        for h in horarios:
 
-            inicio = datetime.strptime(f"{ag.data} {ag.hora}", "%Y-%m-%d %H:%M")
-            fim = inicio + timedelta(minutes=servico.duracao)
+            inicio_novo = datetime.strptime(f"{data_obj} {h}", "%Y-%m-%d %H:%M")
+            fim_novo = inicio_novo + timedelta(minutes=duracao)
 
-            while inicio < fim:
-                horarios_ocupados.append(inicio.strftime("%H:%M"))
-                inicio += timedelta(minutes=30)
+            conflito = False
 
-        horarios = [h for h in horarios if h not in horarios_ocupados]
+            for ag in agendamentos:
+                servico = Servico.query.get(ag.servico_id)
+                if not servico:
+                    continue
 
-        # BLOQUEAR ÚLTIMO HORÁRIO PARA SERVIÇOS LONGOS
-        if servico_escolhido and horarios:
-            horarios_validos = []
+                inicio_existente = datetime.strptime(f"{ag.data} {ag.hora}", "%Y-%m-%d %H:%M")
+                fim_existente = inicio_existente + timedelta(minutes=servico.duracao)
 
-            for h in horarios:
-                inicio = datetime.strptime(f"{data_obj} {h}", "%Y-%m-%d %H:%M")
-                fim = inicio + timedelta(minutes=servico_escolhido.duracao)
+                if inicio_novo < fim_existente and fim_novo > inicio_existente:
+                    conflito = True
+                    break
 
-                ultimo = datetime.strptime(
-                    f"{data_obj} {horarios[-1]}",
-                    "%Y-%m-%d %H:%M"
-                ) + timedelta(minutes=30)
+            if not conflito:
+                horarios_validos.append(h)
 
-                if fim <= ultimo:
-                    horarios_validos.append(h)
-
-            horarios = horarios_validos
+        horarios = horarios_validos
 
     # =========================
     # SALVAR AGENDAMENTO
@@ -254,7 +249,29 @@ def agendar():
                 fim = inicio + timedelta(minutes=servico_escolhido.duracao)
 
                 if fim > ultimo:
-                    erro = "Esse horário não comporta esse procedimento"
+                    erro = f"Esse horário não é válido para esse procedimento, pois ele possui duração de {duracao} minutos."
+                    return render_template(
+                        "agendar.html",
+                        servicos=servicos,
+                        horarios=horarios,
+                        erro=erro,
+                        hoje=hoje
+                    )
+
+            # 🔒 VALIDAÇÃO FINAL (ANTI-CONFLITO)
+            inicio = datetime.strptime(f"{data_obj} {hora_str}", "%Y-%m-%d %H:%M")
+            fim = inicio + timedelta(minutes=duracao)
+
+            for ag in Agendamento.query.filter_by(data=data_obj).all():
+                servico = Servico.query.get(ag.servico_id)
+                if not servico:
+                    continue
+
+                inicio_existente = datetime.strptime(f"{ag.data} {ag.hora}", "%Y-%m-%d %H:%M")
+                fim_existente = inicio_existente + timedelta(minutes=servico.duracao)
+
+                if inicio < fim_existente and fim > inicio_existente:
+                    erro =  "Esse horário não  comporta esse procedimento. Por favor, escolha outro horário."
                     return render_template(
                         "agendar.html",
                         servicos=servicos,
@@ -274,7 +291,6 @@ def agendar():
 
             db.session.add(novo)
             db.session.commit()
-
             # =========================
             # WHATSAPP AUTOMÁTICO (CORRIGIDO)
             # =========================
