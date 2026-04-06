@@ -9,19 +9,18 @@ import os
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'super_chave_segura'
 
-# 🔥 CONFIG BANCO
+# 🔥 CONFIG BANCO (RENDER)
 database_url = os.getenv("DATABASE_URL")
 
 if not database_url:
     raise RuntimeError("DATABASE_URL não configurada!")
 
+# 🔧 Corrige postgres:// -> postgresql://
+if database_url.startswith("postgres://"):
+    database_url = database_url.replace("postgres://", "postgresql://", 1)
+
 app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-# 🔐 SSL pro Supabase
-app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
-    "connect_args": {"sslmode": "require"}
-}
 
 db.init_app(app)
 # =========================
