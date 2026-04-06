@@ -9,20 +9,46 @@ import os
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'super_chave_segura'
 
+# =========================
 # 🔥 CONFIG BANCO (RENDER)
+# =========================
 database_url = os.getenv("DATABASE_URL")
 
 if not database_url:
     raise RuntimeError("DATABASE_URL não configurada!")
 
-# 🔧 Corrige postgres:// -> postgresql://
+# Corrige erro comum do Render (postgres -> postgresql)
 if database_url.startswith("postgres://"):
     database_url = database_url.replace("postgres://", "postgresql://", 1)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+# Inicializa banco
 db.init_app(app)
+
+# =========================
+# 🔐 LOGIN CONFIG (caso use)
+# =========================
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = "login"
+
+@login_manager.user_loader
+def load_user(user_id):
+    return Admin.query.get(int(user_id))
+
+# =========================
+# 🧱 CRIAR TABELAS AUTOMATICAMENTE
+# =========================
+with app.app_context():
+    db.create_all()
+
+# =========================
+# 🚀 START APP
+# =========================
+if __name__ == "__main__":
+    app.run(debug=True)
 # =========================
 # GERAR HORÁRIOS DINÂMICO (CORRIGIDO)
 # =========================
