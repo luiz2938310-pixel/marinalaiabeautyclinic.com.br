@@ -10,16 +10,15 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'super_chave_segura'
 
 # =========================
-# 🔥 CONFIG BANCO (DIRETO)
+# 🔥 CONFIG BANCO
 # =========================
 app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://banco_clinica_vn7w_user:FzYVnVsH1snlxs94DMLEnrgYSEma9w97@dpg-d79sbinkijhs73934i6g-a/banco_clinica_vn7w"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Inicializa banco
 db.init_app(app)
 
 # =========================
-# 🔐 LOGIN CONFIG
+# 🔐 LOGIN
 # =========================
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -30,13 +29,15 @@ def load_user(user_id):
     return Admin.query.get(int(user_id))
 
 # =========================
-# 🧱 CRIAR TABELAS
+# 🧱 ROTA PRA CRIAR BANCO
 # =========================
-with app.app_context():
+@app.route("/criar-banco")
+def criar_banco():
     db.create_all()
+    return "Banco criado com sucesso!"
 
 # =========================
-# 🚀 START APP (RENDER OK)
+# 🚀 START APP
 # =========================
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
