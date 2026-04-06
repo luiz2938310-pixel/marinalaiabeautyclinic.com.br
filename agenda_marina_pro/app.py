@@ -29,14 +29,6 @@ def load_user(user_id):
     return Admin.query.get(int(user_id))
 
 # =========================
-# 🧱 ROTA PRA CRIAR BANCO
-# =========================
-@app.route("/criar-banco")
-def criar_banco():
-    db.create_all()
-    return "Banco criado com sucesso!"
-
-# =========================
 # 🚀 START APP
 # =========================
 if __name__ == "__main__":
