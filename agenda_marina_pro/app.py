@@ -784,6 +784,10 @@ def confirmar_agendamento(id):
     db.session.commit()
     return redirect("/dashboard")
 
+@app.route('/admin')
+def admin():
+    return render_template('painel.html')
+
 # =========================
 # FINAL
 # =========================
