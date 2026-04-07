@@ -617,12 +617,24 @@ def horarios_admin():
     )
 
 # =========================
+# PAINEL PRINCIPAL
+# =========================
+@app.route("/admin")
+@login_required
+def admin():
+    try:
+        # Retorna um template simples do painel principal
+        return render_template("painel.html")
+    except Exception as e:
+        print("Erro ao abrir painel:", e)
+        return "Erro ao abrir o painel", 500
+
+# =========================
 # FINANCEIRO
 # =========================
 @app.route("/admin/financeiro", methods=["GET", "POST"])
 @login_required
 def financeiro():
-
     if request.method == "POST":
         descricao = request.form.get("descricao")
         valor = request.form.get("valor")
@@ -654,7 +666,6 @@ def financeiro():
         registros = Financeiro.query.order_by(Financeiro.data.desc()).all()
 
     return render_template("financeiro_admin.html", registros=registros)
-
 
 # =========================
 # ADMIN ESTOQUE COMPLETO
@@ -784,9 +795,6 @@ def confirmar_agendamento(id):
     db.session.commit()
     return redirect("/dashboard")
 
-@app.route('/admin')
-def admin():
-    return render_template('painel.html')
 
 # =========================
 # FINAL
