@@ -619,15 +619,10 @@ def horarios_admin():
 # =========================
 # PAINEL PRINCIPAL
 # =========================
-@app.route("/admin")
+@app.route("/admin/dashboard")
 @login_required
-def admin():
-    try:
-        # Retorna um template simples do painel principal
-        return render_template("painel.html")
-    except Exception as e:
-        print("Erro ao abrir painel:", e)
-        return "Erro ao abrir o painel", 500
+def dashboard():
+    return render_template("dashboard.html")
 
 # =========================
 # FINANCEIRO
