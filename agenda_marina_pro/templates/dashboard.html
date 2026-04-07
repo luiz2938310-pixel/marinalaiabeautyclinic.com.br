@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
@@ -12,37 +12,45 @@
         body {
             margin: 0;
             font-family: 'Segoe UI';
-            background: #f1f5f9;
+            background: #0f172a;
+            color: #fff;
         }
 
+        /* SIDEBAR */
         .sidebar {
             width: 240px;
             height: 100vh;
-            background: linear-gradient(180deg, #111827, #1f2937);
-            color: white;
+            background: linear-gradient(180deg, #020617, #0f172a);
             position: fixed;
             padding: 20px;
         }
 
-            .sidebar a {
-                display: block;
-                padding: 12px;
-                margin-bottom: 10px;
-                border-radius: 10px;
-                background: #1f2937;
-                color: white;
-                text-decoration: none;
-            }
+        .sidebar h2 {
+            margin-bottom: 20px;
+        }
 
-                .sidebar a:hover {
-                    background: #374151;
-                }
+        .sidebar a {
+            display: block;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.05);
+            color: white;
+            text-decoration: none;
+            transition: .3s;
+        }
 
+        .sidebar a:hover {
+            background: #6366f1;
+        }
+
+        /* CONTENT */
         .content {
             margin-left: 260px;
             padding: 30px;
         }
 
+        /* CARDS */
         .cards {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
@@ -53,31 +61,30 @@
         .card {
             padding: 25px;
             border-radius: 16px;
-            color: white;
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            transition: .3s;
         }
 
-        .blue {
-            background: linear-gradient(135deg,#3b82f6,#2563eb);
+        .card:hover {
+            transform: translateY(-5px);
         }
 
-        .green {
-            background: linear-gradient(135deg,#22c55e,#16a34a);
+        .card h1 {
+            margin-top: 10px;
         }
 
-        .purple {
-            background: linear-gradient(135deg,#8b5cf6,#6d28d9);
-        }
+        .blue { border-left: 5px solid #3b82f6; }
+        .green { border-left: 5px solid #22c55e; }
+        .purple { border-left: 5px solid #8b5cf6; }
+        .orange { border-left: 5px solid #f59e0b; }
 
-        .orange {
-            background: linear-gradient(135deg,#f59e0b,#d97706);
-        }
-
+        /* TABLE */
         .table-card {
-            background: white;
+            background: rgba(255,255,255,0.05);
             border-radius: 16px;
             padding: 20px;
             margin-bottom: 25px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
         }
 
         table {
@@ -91,141 +98,141 @@
         }
 
         th {
-            background: #f9fafb;
+            background: rgba(255,255,255,0.05);
         }
 
-        .pendente {
-            color: orange;
-            font-weight: bold;
+        tr:hover {
+            background: rgba(255,255,255,0.05);
         }
 
-        .concluido {
-            color: green;
-            font-weight: bold;
-        }
+        /* STATUS */
+        .pendente { color: #f59e0b; font-weight: bold; }
+        .concluido { color: #22c55e; font-weight: bold; }
 
+        /* BOTÕES */
         .btn {
             padding: 6px 10px;
-            border-radius: 6px;
+            border-radius: 8px;
             color: white;
             font-size: 12px;
             text-decoration: none;
+            transition: .2s;
         }
 
-        .btn-del {
-            background: #ef4444;
+        .btn:hover {
+            transform: scale(1.05);
         }
 
-        .btn-confirm {
-            background: #22c55e;
-        }
+        .btn-del { background: #ef4444; }
+        .btn-confirm { background: #22c55e; }
 
+        /* CALENDÁRIO */
         #calendar {
             margin-top: 20px;
-            background: white;
+            background: rgba(255,255,255,0.05);
             padding: 15px;
             border-radius: 16px;
         }
 
+        .fc {
+            color: white;
+        }
+
         .fc-button {
-            background: #6A0DAD !important;
+            background: #6366f1 !important;
             border: none !important;
+        }
+
+        .fc-toolbar-title {
+            color: white;
         }
     </style>
 </head>
 
 <body>
 
-    <div class="sidebar">
-        <h2>Studio PRO</h2>
-        <a href="/dashboard">Dashboard</a>
-        <a href="/admin/horarios">Horários</a>
-        <a href="/admin/horarios-especiais">Horário por Período</a>
-        <a href="/admin/bloqueios">Bloquear Datas</a>
-        <a href="/admin/financeiro">Financeiro</a>
-        <a href="/admin/estoque">Estoque</a>
-        <a href="/logout">Sair</a>
+<div class="sidebar">
+    <h2>Studio PRO</h2>
+    <a href="/dashboard">Dashboard</a>
+    <a href="/admin/horarios">Horários</a>
+    <a href="/admin/horarios-especiais">Horário por Período</a>
+    <a href="/admin/bloqueios">Bloquear Datas</a>
+    <a href="/admin/financeiro">Financeiro</a>
+    <a href="/admin/estoque">Estoque</a>
+    <a href="/logout">Sair</a>
+</div>
+
+<div class="content">
+
+    <h2>Painel Geral</h2>
+
+    <div class="cards">
+        <div class="card blue"><h3>Agendamentos</h3><h1>{{ total_agendamentos }}</h1></div>
+        <div class="card green"><h3>Faturamento</h3><h1>R$ {{ "%.2f"|format(faturamento) }}</h1></div>
+        <div class="card purple"><h3>Faturamento Mês</h3><h1>R$ {{ "%.2f"|format(faturamento_mes) }}</h1></div>
+        <div class="card orange"><h3>Produtos</h3><h1>{{ total_produtos }}</h1></div>
     </div>
 
-    <div class="content">
+    <div class="table-card">
+        <h3>Agendamentos</h3>
 
-        <h2>Painel Geral</h2>
+        <table>
+            <tr>
+                <th>Cliente</th>
+                <th>Serviço</th>
+                <th>Data</th>
+                <th>Hora</th>
+                <th>Status</th>
+                <th>Ações</th>
+            </tr>
 
-        <div class="cards">
-            <div class="card blue"><h3>Agendamentos</h3><h1>{{ total_agendamentos }}</h1></div>
-            <div class="card green"><h3>Faturamento</h3><h1>R$ {{ "%.2f"|format(faturamento) }}</h1></div>
-            <div class="card purple"><h3>Faturamento Mês</h3><h1>R$ {{ "%.2f"|format(faturamento_mes) }}</h1></div>
-            <div class="card orange"><h3>Produtos</h3><h1>{{ total_produtos }}</h1></div>
-        </div>
+            {% for a in agendamentos %}
+            <tr>
+                <td>{{ a.cliente_nome }}</td>
+                <td>{{ a.servico.nome }}</td>
+                <td>{{ a.data.strftime('%d/%m/%Y') }}</td>
+                <td>{{ a.hora }}</td>
 
-        <div class="table-card">
-            <h3>Agendamentos</h3>
+                <td>
+                    {% if a.status == "Concluido" %}
+                    <span class="concluido">Concluído</span>
+                    {% else %}
+                    <span class="pendente">Pendente</span>
+                    {% endif %}
+                </td>
 
-            <table>
-                <tr>
-                    <th>Cliente</th>
-                    <th>Serviço</th>
-                    <th>Data</th>
-                    <th>Hora</th>
-                    <th>Status</th>
-                    <th>Ações</th>
-                </tr>
+                <td>
+                    {% if a.status != "Concluido" %}
+                    <a href="/admin/agendamento/confirmar/{{ a.id }}" class="btn btn-confirm">Confirmar</a>
+                    {% endif %}
 
-                {% for a in agendamentos %}
-                <tr>
-                    <td>{{ a.cliente_nome }}</td>
-                    <td>{{ a.servico.nome }}</td>
-                    <td>{{ a.data.strftime('%d/%m/%Y') }}</td>
-                    <td>{{ a.hora }}</td>
+                    <a href="/admin/agendamento/excluir/{{ a.id }}" class="btn btn-del">Excluir</a>
 
-                    <td>
-                        {% if a.status == "Concluido" %}
-                        <span class="concluido">Concluído</span>
-                        {% else %}
-                        <span class="pendente">Pendente</span>
-                        {% endif %}
-                    </td>
-
-                    <td>
-
-                        {% if a.status != "Concluido" %}
-                        <a href="/admin/agendamento/confirmar/{{ a.id }}" class="btn btn-confirm">
-                            Confirmar
-                        </a>
-                        {% endif %}
-
-                        <a href="/admin/agendamento/excluir/{{ a.id }}" class="btn btn-del">
-                            Excluir
-                        </a>
-
-                        <a target="_blank"
-                           href="https://wa.me/55{{ a.telefone }}?text={{ ('Olá ' ~ a.cliente_nome ~ '!\n\nConfirmando seu agendamento:\n\nData: ' ~ a.data.strftime('%d/%m/%Y') ~ '\nHora: ' ~ a.hora ~ '\n\nAguardo por você!') | urlencode }}"
-                           class="btn"
-                           style="background:#25D366;">
-                            WhatsApp
-                        </a>
-
-                    </td>
-                </tr>
-                {% endfor %}
-
-            </table>
-        </div>
-
-        <div class="table-card">
-            <h3>Agenda</h3>
-            <div id="calendar"></div>
-        </div>
-
+                    <a target="_blank"
+                       href="https://wa.me/55{{ a.telefone }}?text={{ ('Olá ' ~ a.cliente_nome ~ '!\n\nConfirmando seu agendamento:\n\nData: ' ~ a.data.strftime('%d/%m/%Y') ~ '\nHora: ' ~ a.hora ~ '\n\nAguardo por você!') | urlencode }}"
+                       class="btn"
+                       style="background:#25D366;">
+                        WhatsApp
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
     </div>
 
-    <script>
+    <div class="table-card">
+        <h3>Agenda</h3>
+        <div id="calendar"></div>
+    </div>
+
+</div>
+
+<script>
 document.addEventListener('DOMContentLoaded', function () {
 
 var calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
 initialView: 'dayGridMonth',
 locale: 'pt-br',
-editable: true,
 
 headerToolbar: {
 left: 'prev,next today',
@@ -243,7 +250,6 @@ day: 'Dia'
 events: [
 {% for a in agendamentos %}
 {
-id: "{{ a.id }}",
 title: "{{ a.servico.nome|e }} - {{ a.cliente_nome|e }}",
 start: "{{ a.data.strftime('%Y-%m-%d') }}T{{ a.hora }}:00",
 color: "{{ '#22c55e' if a.status == 'Concluido' else '#ef4444' }}"
@@ -254,7 +260,7 @@ color: "{{ '#22c55e' if a.status == 'Concluido' else '#ef4444' }}"
 
 calendar.render();
 });
-    </script>
+</script>
 
 </body>
 </html>
