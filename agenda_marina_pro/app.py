@@ -622,33 +622,63 @@ def horarios_admin():
 @app.route("/admin/financeiro", methods=["GET", "POST"])
 @login_required
 def financeiro():
+
+    # =========================
+    # SALVAR (POST)
+    # =========================
     if request.method == "POST":
         descricao = request.form.get("descricao")
         valor = request.form.get("valor")
         tipo = request.form.get("tipo")
 
-        if descricao and valor and tipo:
+        # VALIDAÇÃO
+        if not descricao or not valor or not tipo:
+            flash("Preencha todos os campos!", "erro")
+            return redirect(url_for("financeiro"))
+
+        try:
             novo = Financeiro(
-                descricao=descricao,
+                descricao=descricao.strip(),
                 valor=float(valor),
                 tipo=tipo,
                 data=datetime.now()
             )
+
             db.session.add(novo)
             db.session.commit()
-            flash("Registro adicionado com sucesso!", "sucesso")
-            return redirect(url_for("financeiro"))
-        else:
-            flash("Preencha todos os campos!", "erro")
 
+            flash("Registro adicionado com sucesso!", "sucesso")
+
+        except ValueError:
+            db.session.rollback()
+            flash("Valor inválido!", "erro")
+
+        except Exception as e:
+            db.session.rollback()
+            print("ERRO FINANCEIRO:", e)
+            flash("Erro ao salvar registro!", "erro")
+
+        # 🔥 ESSENCIAL (resolve bug do botão voltar)
+        return redirect(url_for("financeiro"))
+
+    # =========================
+    # FILTRO POR MÊS
+    # =========================
     mes = request.args.get("mes")
+    registros = []
 
     if mes:
-        ano, mes_num = mes.split("-")
-        registros = Financeiro.query.filter(
-            extract("year", Financeiro.data) == int(ano),
-            extract("month", Financeiro.data) == int(mes_num)
-        ).order_by(Financeiro.data.desc()).all()
+        try:
+            ano, mes_num = mes.split("-")
+
+            registros = Financeiro.query.filter(
+                extract("year", Financeiro.data) == int(ano),
+                extract("month", Financeiro.data) == int(mes_num)
+            ).order_by(Financeiro.data.desc()).all()
+
+        except Exception as e:
+            print("ERRO FILTRO:", e)
+            registros = Financeiro.query.order_by(Financeiro.data.desc()).all()
     else:
         registros = Financeiro.query.order_by(Financeiro.data.desc()).all()
 
