@@ -617,14 +617,6 @@ def horarios_admin():
     )
 
 # =========================
-# PAINEL PRINCIPAL
-# =========================
-@app.route("/admin/dashboard", endpoint="dashboard_financeiro")
-@login_required
-def dashboard():
-    return render_template("dashboard.html")
-
-# =========================
 # FINANCEIRO
 # =========================
 @app.route("/admin/financeiro", methods=["GET", "POST"])
