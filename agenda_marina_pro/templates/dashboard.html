@@ -16,7 +16,7 @@ body {
     color:#fff;
 }
 
-/* ===== SIDEBAR PREMIUM ===== */
+/* SIDEBAR */
 .sidebar {
     width:260px;
     height:100vh;
@@ -24,10 +24,9 @@ body {
     padding:25px;
     background:rgba(255,255,255,0.03);
     backdrop-filter:blur(20px);
-    border-right:1px solid rgba(255,255,255,0.05);
 }
 
-/* ===== LOGO INSANO ===== */
+/* LOGO */
 .logo {
     font-size:22px;
     font-weight:800;
@@ -43,28 +42,14 @@ body {
     -webkit-background-clip:text;
     -webkit-text-fill-color:transparent;
     animation:gradientMove 6s infinite;
-    text-shadow:0 0 30px rgba(167,139,250,0.8);
 }
 
 .logo small {
     font-size:11px;
     opacity:.7;
-    letter-spacing:2px;
 }
 
-/* brilho passando */
-.logo span::after {
-    content:'';
-    position:absolute;
-    width:100%;
-    height:100%;
-    top:0;
-    left:-100%;
-    background:linear-gradient(120deg,transparent,rgba(255,255,255,0.5),transparent);
-    animation:shine 4s infinite;
-}
-
-/* ===== MENU ===== */
+/* MENU */
 .sidebar a {
     display:block;
     padding:12px;
@@ -79,31 +64,22 @@ body {
 .sidebar a:hover {
     background:#6366f1;
     transform:translateX(6px);
-    box-shadow:0 0 15px rgba(99,102,241,0.5);
 }
 
-/* ===== CONTENT ===== */
+/* CONTENT */
 .content {
     margin-left:280px;
     padding:30px;
 }
 
-/* ===== TOPO ===== */
+/* TOPO */
 .topbar {
     display:flex;
     justify-content:space-between;
-    align-items:center;
     margin-bottom:25px;
 }
 
-.status {
-    background:rgba(34,197,94,0.2);
-    padding:8px 14px;
-    border-radius:20px;
-    font-size:12px;
-}
-
-/* ===== CARDS ===== */
+/* CARDS */
 .cards {
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
@@ -115,17 +91,9 @@ body {
     padding:25px;
     border-radius:16px;
     background:rgba(255,255,255,0.04);
-    backdrop-filter:blur(10px);
-    transition:.3s;
-    border:1px solid rgba(255,255,255,0.05);
 }
 
-.card:hover {
-    transform:translateY(-8px);
-    box-shadow:0 0 25px rgba(99,102,241,0.3);
-}
-
-/* ===== TABELA ===== */
+/* TABELA */
 .table-card {
     background:rgba(255,255,255,0.04);
     border-radius:16px;
@@ -151,11 +119,11 @@ tr:hover {
     background:rgba(255,255,255,0.05);
 }
 
-/* ===== STATUS ===== */
+/* STATUS */
 .pendente { color:#f59e0b; font-weight:bold; }
 .concluido { color:#22c55e; font-weight:bold; }
 
-/* ===== BOTÕES ===== */
+/* BOTÕES */
 .btn {
     padding:6px 10px;
     border-radius:8px;
@@ -165,14 +133,13 @@ tr:hover {
     transition:.2s;
 }
 
-.btn:hover {
-    transform:scale(1.08);
-}
+.btn:hover { transform:scale(1.05); }
 
 .btn-del { background:#ef4444; }
 .btn-confirm { background:#22c55e; }
+.btn-whats { background:#25D366; }
 
-/* ===== CALENDÁRIO ===== */
+/* CALENDÁRIO */
 #calendar {
     margin-top:20px;
     background:rgba(255,255,255,0.04);
@@ -187,7 +154,7 @@ tr:hover {
     border:none !important;
 }
 
-/* ===== ANIMAÇÕES ===== */
+/* ANIMAÇÕES */
 @keyframes gradientMove {
     0%{background-position:0%}
     50%{background-position:100%}
@@ -197,12 +164,6 @@ tr:hover {
 @keyframes float {
     0%,100%{transform:translateY(0)}
     50%{transform:translateY(-6px)}
-}
-
-@keyframes shine {
-    0%{left:-100%}
-    50%{left:100%}
-    100%{left:100%}
 }
 
 </style>
@@ -230,7 +191,6 @@ tr:hover {
 
     <div class="topbar">
         <h2>Painel Geral</h2>
-        <div class="status">● Sistema Online</div>
     </div>
 
     <div class="cards">
@@ -269,11 +229,25 @@ tr:hover {
                 </td>
 
                 <td>
+
                     {% if a.status != "Concluido" %}
-                    <a href="/admin/agendamento/confirmar/{{ a.id }}" class="btn btn-confirm">Confirmar</a>
+                    <a href="/admin/agendamento/confirmar/{{ a.id }}" class="btn btn-confirm">
+                        ✔ Confirmar
+                    </a>
                     {% endif %}
 
-                    <a href="/admin/agendamento/excluir/{{ a.id }}" class="btn btn-del">Excluir</a>
+                    <a href="/admin/agendamento/excluir/{{ a.id }}"
+                       class="btn btn-del"
+                       onclick="return confirm('Deseja excluir este agendamento?')">
+                        🗑 Excluir
+                    </a>
+
+                    <a target="_blank"
+                       href="https://wa.me/55{{ a.telefone }}?text={{ ('Olá ' ~ a.cliente_nome ~ '!\n\nConfirmando seu agendamento:\n\n📅 Data: ' ~ a.data.strftime('%d/%m/%Y') ~ '\n⏰ Hora: ' ~ a.hora ~ '\n\nAguardo por você! 💜') | urlencode }}"
+                       class="btn btn-whats">
+                        💬 WhatsApp
+                    </a>
+
                 </td>
             </tr>
             {% endfor %}
