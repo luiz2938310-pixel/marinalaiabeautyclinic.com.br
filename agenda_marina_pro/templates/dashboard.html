@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard Studio PRO</title>
+    <title>Painel Marina Laia Beauty Clinic</title>
 
     <!-- FULLCALENDAR -->
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
@@ -18,17 +18,39 @@
 
         /* SIDEBAR */
         .sidebar {
-            width: 240px;
+            width: 250px;
             height: 100vh;
             background: linear-gradient(180deg, #020617, #0f172a);
             position: fixed;
-            padding: 20px;
+            padding: 25px;
+            box-shadow: 5px 0 30px rgba(0,0,0,0.5);
         }
 
-        .sidebar h2 {
-            margin-bottom: 20px;
+        /* LOGO PREMIUM */
+        .logo {
+            font-size: 22px;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 30px;
+            letter-spacing: 1px;
         }
 
+        .logo span {
+            display: block;
+            font-size: 24px;
+            background: linear-gradient(90deg,#a78bfa,#6366f1,#c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(167,139,250,0.5);
+        }
+
+        .logo small {
+            font-size: 12px;
+            opacity: 0.7;
+            letter-spacing: 2px;
+        }
+
+        /* MENU */
         .sidebar a {
             display: block;
             padding: 12px;
@@ -42,11 +64,12 @@
 
         .sidebar a:hover {
             background: #6366f1;
+            transform: translateX(5px);
         }
 
         /* CONTENT */
         .content {
-            margin-left: 260px;
+            margin-left: 270px;
             padding: 30px;
         }
 
@@ -68,10 +91,6 @@
 
         .card:hover {
             transform: translateY(-5px);
-        }
-
-        .card h1 {
-            margin-top: 10px;
         }
 
         .blue { border-left: 5px solid #3b82f6; }
@@ -134,17 +153,11 @@
             border-radius: 16px;
         }
 
-        .fc {
-            color: white;
-        }
+        .fc { color: white; }
 
         .fc-button {
             background: #6366f1 !important;
             border: none !important;
-        }
-
-        .fc-toolbar-title {
-            color: white;
         }
     </style>
 </head>
@@ -152,7 +165,14 @@
 <body>
 
 <div class="sidebar">
-    <h2>Studio PRO</h2>
+
+    <!-- LOGO PREMIUM -->
+    <div class="logo">
+        Painel<br>
+        <span>Marina Laia</span>
+        <small>BEAUTY CLINIC</small>
+    </div>
+
     <a href="/dashboard">Dashboard</a>
     <a href="/admin/horarios">Horários</a>
     <a href="/admin/horarios-especiais">Horário por Período</a>
@@ -160,6 +180,7 @@
     <a href="/admin/financeiro">Financeiro</a>
     <a href="/admin/estoque">Estoque</a>
     <a href="/logout">Sair</a>
+
 </div>
 
 <div class="content">
