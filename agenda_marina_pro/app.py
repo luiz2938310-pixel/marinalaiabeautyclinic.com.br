@@ -692,23 +692,30 @@ def financeiro():
 def admin_estoque():
 
     if request.method == "POST":
-        nome = request.form.get("nome")
-        quantidade = request.form.get("quantidade")
-        minimo = request.form.get("minimo")
-        custo = request.form.get("custo")
+        try:
+            nome = request.form.get("nome")
+            quantidade = int(request.form.get("quantidade") or 0)
+            minimo = int(request.form.get("minimo") or 0)
+            custo = float(request.form.get("custo") or 0)
 
-        if nome and quantidade:
-            novo = Estoque(
-                nome=nome,
-                quantidade=int(quantidade),
-                minimo=int(minimo) if minimo else 0,
-                custo=float(custo) if custo else 0.0
-            )
-            db.session.add(novo)
-            db.session.commit()
-            flash(f"Produto '{nome}' adicionado com sucesso!", "sucesso")
-        else:
-            flash("Preencha o nome e a quantidade do produto.", "erro")
+            if nome:
+                novo = Estoque(
+                    nome=nome,
+                    quantidade=quantidade,
+                    minimo=minimo,
+                    custo=custo
+                )
+                db.session.add(novo)
+                db.session.commit()
+
+                flash(f"Produto '{nome}' adicionado com sucesso!", "sucesso")
+            else:
+                flash("Preencha o nome do produto.", "erro")
+
+        except Exception as e:
+            print("ERRO AO ADICIONAR:", e)
+            db.session.rollback()
+            flash("Erro ao adicionar produto.", "erro")
 
         return redirect(url_for("admin_estoque"))
 
@@ -722,10 +729,18 @@ def admin_estoque():
 @app.route("/admin/estoque/excluir/<int:id>")
 @login_required
 def excluir_estoque(id):
-    produto = Estoque.query.get_or_404(id)
-    db.session.delete(produto)
-    db.session.commit()
-    flash(f"Produto '{produto.nome}' excluído com sucesso!", "sucesso")
+    try:
+        produto = Estoque.query.get_or_404(id)
+        db.session.delete(produto)
+        db.session.commit()
+
+        flash(f"Produto '{produto.nome}' excluído com sucesso!", "sucesso")
+
+    except Exception as e:
+        print("ERRO AO EXCLUIR:", e)
+        db.session.rollback()
+        flash("Erro ao excluir produto.", "erro")
+
     return redirect(url_for("admin_estoque"))
 
 
@@ -734,7 +749,8 @@ def excluir_estoque(id):
 # =========================
 @app.route("/admin/estoque/editar/<int:id>", methods=["GET", "POST"])
 @login_required
-def editar_estoque(id):
+def editar_estoque_v2(id):  # 🔥 RENOMEADO PRA EVITAR CONFLITO
+
     produto = Estoque.query.get_or_404(id)
 
     if request.method == "POST":
@@ -750,9 +766,9 @@ def editar_estoque(id):
             return redirect(url_for("admin_estoque"))
 
         except Exception as e:
-            print("ERRO:", e)
+            print("ERRO AO EDITAR:", e)
             db.session.rollback()
-            return str(e)
+            flash("Erro ao atualizar produto.", "erro")
 
     return render_template("editar_estoque.html", produto=produto)
 
