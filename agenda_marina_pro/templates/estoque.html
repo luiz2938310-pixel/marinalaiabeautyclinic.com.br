@@ -198,17 +198,28 @@ tr:hover{
             {% for p in produtos %}
             <tr>
                 <td>{{ p.nome }}</td>
+
                 <td>
                     {{ p.quantidade }}
                     {% if p.quantidade <= p.minimo %}
-                    <span class="baixo">⚠ Baixo</span>
+                        <span class="baixo">⚠ Baixo</span>
                     {% endif %}
                 </td>
+
                 <td>{{ p.minimo }}</td>
+
                 <td>R$ {{ "%.2f"|format(p.custo) }}</td>
+
                 <td>
-                    <a href="{{ url_for('editar_estoque', id=p.id) }}">
-                    <a href="/admin/estoque/excluir/{{ p.id }}" class="btn btn-del" onclick="return confirm('Excluir produto?')">Excluir</a>
+                    <a href="{{ url_for('editar_estoque', id=p.id) }}" class="btn btn-edit">
+                        ✏ Editar
+                    </a>
+
+                    <a href="{{ url_for('excluir_estoque', id=p.id) }}" 
+                       class="btn btn-del"
+                       onclick="return confirm('Excluir produto?')">
+                        🗑 Excluir
+                    </a>
                 </td>
             </tr>
             {% endfor %}
