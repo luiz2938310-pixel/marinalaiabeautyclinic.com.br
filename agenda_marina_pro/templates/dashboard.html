@@ -26,28 +26,43 @@
             box-shadow: 5px 0 30px rgba(0,0,0,0.5);
         }
 
-        /* LOGO PREMIUM */
+        /* LOGO ANIMADO */
         .logo {
             font-size: 22px;
             font-weight: 800;
             line-height: 1.2;
             margin-bottom: 30px;
             letter-spacing: 1px;
+            animation: float 3s ease-in-out infinite;
         }
 
         .logo span {
             display: block;
-            font-size: 24px;
-            background: linear-gradient(90deg,#a78bfa,#6366f1,#c084fc);
+            font-size: 26px;
+            background: linear-gradient(270deg,#a78bfa,#6366f1,#c084fc,#a78bfa);
+            background-size: 400% 400%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 20px rgba(167,139,250,0.5);
+            animation: gradientMove 6s ease infinite;
+            text-shadow: 0 0 25px rgba(167,139,250,0.7);
         }
 
         .logo small {
             font-size: 12px;
             opacity: 0.7;
             letter-spacing: 2px;
+        }
+
+        /* ANIMAÇÕES */
+        @keyframes gradientMove {
+            0% { background-position: 0% }
+            50% { background-position: 100% }
+            100% { background-position: 0% }
+        }
+
+        @keyframes float {
+            0%,100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
         }
 
         /* MENU */
@@ -166,7 +181,7 @@
 
 <div class="sidebar">
 
-    <!-- LOGO PREMIUM -->
+    <!-- LOGO ANIMADO -->
     <div class="logo">
         Painel<br>
         <span>Marina Laia</span>
