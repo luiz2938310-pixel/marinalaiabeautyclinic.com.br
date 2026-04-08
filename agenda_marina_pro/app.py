@@ -653,6 +653,30 @@ def financeiro():
         print("ERRO FINANCEIRO:", e)
         return str(e)
 
+# =========================
+# EDITAR FINANCEIRO
+# =========================
+@app.route("/admin/financeiro/editar/<int:id>", methods=["GET", "POST"])
+@login_required
+def editar_financeiro(id):
+    registro = Financeiro.query.get_or_404(id)
+
+    if request.method == "POST":
+        try:
+            registro.descricao = request.form.get("descricao")
+            registro.valor = float(request.form.get("valor") or 0)
+            registro.tipo = request.form.get("tipo")
+            
+            db.session.commit()
+            flash("Registro atualizado com sucesso!", "sucesso")
+            return redirect(url_for("financeiro"))
+        except Exception as e:
+            db.session.rollback()
+            print("ERRO AO EDITAR FINANCEIRO:", e)
+            flash("Erro ao atualizar registro!", "erro")
+
+    return render_template("editar_financeiro.html", registro=registro)
+
 
 # =========================
 # EXCLUIR FINANCEIRO
