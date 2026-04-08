@@ -144,7 +144,7 @@ button:hover{
     <div class="card">
 
         <!-- 🔥 CORRIGIDO AQUI -->
-        <form method="POST" action="{{ url_for('editar_estoque_v2', id=produto.id) }}">
+        {{ url_for('editar_estoque', id=produto.id) }}
 
             <div>
                 <label>Nome do Produto</label>
