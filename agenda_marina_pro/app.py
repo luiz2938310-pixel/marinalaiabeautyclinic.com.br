@@ -623,15 +623,11 @@ def horarios_admin():
 @login_required
 def financeiro():
 
-    # =========================
-    # SALVAR (POST)
-    # =========================
     if request.method == "POST":
         descricao = request.form.get("descricao")
         valor = request.form.get("valor")
         tipo = request.form.get("tipo")
 
-        # VALIDAÇÃO
         if not descricao or not valor or not tipo:
             flash("Preencha todos os campos!", "erro")
             return redirect(url_for("financeiro"))
@@ -649,23 +645,14 @@ def financeiro():
 
             flash("Registro adicionado com sucesso!", "sucesso")
 
-        except ValueError:
-            db.session.rollback()
-            flash("Valor inválido!", "erro")
-
         except Exception as e:
             db.session.rollback()
             print("ERRO FINANCEIRO:", e)
             flash("Erro ao salvar registro!", "erro")
 
-        # 🔥 ESSENCIAL (resolve bug do botão voltar)
         return redirect(url_for("financeiro"))
 
-    # =========================
-    # FILTRO POR MÊS
-    # =========================
     mes = request.args.get("mes")
-    registros = []
 
     if mes:
         try:
@@ -676,16 +663,31 @@ def financeiro():
                 extract("month", Financeiro.data) == int(mes_num)
             ).order_by(Financeiro.data.desc()).all()
 
-        except Exception as e:
-            print("ERRO FILTRO:", e)
+        except:
             registros = Financeiro.query.order_by(Financeiro.data.desc()).all()
     else:
         registros = Financeiro.query.order_by(Financeiro.data.desc()).all()
 
     return render_template("financeiro_admin.html", registros=registros)
 
+
 # =========================
-# ADMIN ESTOQUE COMPLETO
+# EXCLUIR FINANCEIRO
+# =========================
+@app.route("/admin/financeiro/excluir/<int:id>")
+@login_required
+def excluir_financeiro(id):
+    registro = Financeiro.query.get_or_404(id)
+
+    db.session.delete(registro)
+    db.session.commit()
+
+    flash("Registro excluído com sucesso!", "sucesso")
+    return redirect(url_for("financeiro"))
+
+
+# =========================
+# ADMIN ESTOQUE
 # =========================
 @app.route("/admin/estoque", methods=["GET", "POST"])
 @login_required
@@ -729,27 +731,21 @@ def admin_estoque():
 @app.route("/admin/estoque/excluir/<int:id>")
 @login_required
 def excluir_estoque(id):
-    try:
-        produto = Estoque.query.get_or_404(id)
-        db.session.delete(produto)
-        db.session.commit()
+    produto = Estoque.query.get_or_404(id)
 
-        flash(f"Produto '{produto.nome}' excluído com sucesso!", "sucesso")
+    db.session.delete(produto)
+    db.session.commit()
 
-    except Exception as e:
-        print("ERRO AO EXCLUIR:", e)
-        db.session.rollback()
-        flash("Erro ao excluir produto.", "erro")
-
+    flash(f"Produto '{produto.nome}' excluído com sucesso!", "sucesso")
     return redirect(url_for("admin_estoque"))
 
 
 # =========================
-# EDITAR ESTOQUE
+# EDITAR ESTOQUE (ÚNICO!!)
 # =========================
 @app.route("/admin/estoque/editar/<int:id>", methods=["GET", "POST"])
 @login_required
-def editar_estoque_v2(id):  # 🔥 RENOMEADO PRA EVITAR CONFLITO
+def editar_estoque(id):
 
     produto = Estoque.query.get_or_404(id)
 
@@ -769,53 +765,6 @@ def editar_estoque_v2(id):  # 🔥 RENOMEADO PRA EVITAR CONFLITO
             print("ERRO AO EDITAR:", e)
             db.session.rollback()
             flash("Erro ao atualizar produto.", "erro")
-
-    return render_template("editar_estoque.html", produto=produto)
-
-# =========================
-# EXCLUIR FINANCEIRO
-# =========================
-@app.route("/admin/financeiro/excluir/<int:id>")
-@login_required
-def excluir_financeiro(id):
-    registro = Financeiro.query.get(id)
-
-    if registro:
-        db.session.delete(registro)
-        db.session.commit()
-        flash("Registro excluído com sucesso!", "sucesso")
-    else:
-        flash("Registro não encontrado!", "erro")
-
-    return redirect(url_for("financeiro"))
-
-
-# =========================
-# EDITAR FINANCEIRO
-# =========================
-@app.route("/admin/estoque/editar/<int:id>", methods=["GET", "POST"])
-@login_required
-def editar_estoque(id):
-    produto = Estoque.query.get_or_404(id)
-
-    if request.method == "POST":
-        try:
-            produto.nome = request.form.get("nome")
-
-            # Corrigido (evita erro se vier vazio)
-            produto.quantidade = int(request.form.get("quantidade") or 0)
-            produto.minimo = int(request.form.get("minimo") or 0)
-            produto.custo = float(request.form.get("custo") or 0)
-
-            db.session.commit()
-
-            flash(f"Produto '{produto.nome}' editado com sucesso!", "sucesso")
-            return redirect(url_for("admin_estoque"))
-
-        except Exception as e:
-            print("ERRO AO EDITAR ESTOQUE:", e)
-            db.session.rollback()
-            return "Erro interno ao atualizar produto"
 
     return render_template("editar_estoque.html", produto=produto)
 # =========================
