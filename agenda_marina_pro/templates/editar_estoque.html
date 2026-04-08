@@ -1,132 +1,164 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <title>Editar Estoque</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<title>Editar Produto</title>
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
-        body {
-            font-family: 'Poppins',sans-serif;
-            background: linear-gradient(135deg,#0f172a,#1e293b);
-            color: white;
-            padding: 30px;
-        }
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
 
-        .content {
-            max-width: 600px;
-            margin: auto;
-        }
+body{
+    font-family:'Poppins',sans-serif;
+    background:linear-gradient(135deg,#020617,#0f172a);
+    color:#fff;
+    padding:30px;
+}
 
-        h2 {
-            text-align: center;
-            margin-bottom: 25px;
-            color: #3b82f6;
-        }
+/* CONTAINER */
+.content{
+    max-width:650px;
+    margin:auto;
+}
 
-        .card {
-            background: rgba(255,255,255,0.08);
-            backdrop-filter: blur(10px);
-            padding: 25px;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        }
+/* TÍTULO */
+h2{
+    text-align:center;
+    margin-bottom:25px;
+    font-size:26px;
+}
 
-        form {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
+/* CARD */
+.card{
+    background:rgba(255,255,255,0.05);
+    backdrop-filter:blur(12px);
+    padding:30px;
+    border-radius:18px;
+    box-shadow:0 15px 40px rgba(0,0,0,0.4);
+}
 
-        input {
-            padding: 12px 15px;
-            border-radius: 8px;
-            border: none;
-            outline: none;
-            font-size: 14px;
-        }
+/* FORM */
+form{
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+}
 
-        input:focus {
-            box-shadow: 0 0 0 3px rgba(59,130,246,0.5);
-        }
+label{
+    font-size:13px;
+    opacity:.7;
+}
 
-        button {
-            padding: 12px;
-            border-radius: 10px;
-            border: none;
-            background: #3b82f6;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            transition: .3s;
-            font-size: 16px;
-        }
+/* INPUTS */
+input{
+    padding:13px 15px;
+    border-radius:10px;
+    border:none;
+    outline:none;
+    background:#0f172a;
+    color:#fff;
+    font-size:14px;
+    transition:.3s;
+}
 
-        button:hover {
-            background: #2563eb;
-        }
+input:focus{
+    box-shadow:0 0 0 2px #6366f1;
+    transform:scale(1.02);
+}
 
-        .btn-cancel {
-            background: #ef4444;
-            text-align: center;
-            line-height: 38px;
-            text-decoration: none;
-            display: inline-block;
-            padding: 12px;
-            border-radius: 10px;
-            color: white;
-        }
+/* LINHA */
+.row{
+    display:flex;
+    gap:15px;
+}
 
-        .btn-cancel:hover {
-            background: #dc2626;
-        }
+/* BOTÕES */
+.actions{
+    display:flex;
+    gap:10px;
+    margin-top:10px;
+}
 
-        .row {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
+button{
+    flex:1;
+    padding:14px;
+    border:none;
+    border-radius:12px;
+    background:#6366f1;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+    transition:.3s;
+}
 
-        .row input {
-            flex: 1;
-        }
-    </style>
+button:hover{
+    transform:translateY(-2px);
+    box-shadow:0 5px 20px rgba(99,102,241,0.4);
+}
+
+/* VOLTAR */
+.btn-cancel{
+    flex:1;
+    text-align:center;
+    padding:14px;
+    border-radius:12px;
+    background:#ef4444;
+    text-decoration:none;
+    color:white;
+    font-weight:bold;
+    transition:.3s;
+}
+
+.btn-cancel:hover{
+    transform:translateY(-2px);
+    box-shadow:0 5px 20px rgba(239,68,68,0.4);
+}
+</style>
 </head>
 
 <body>
-    <div class="content">
-        <h2>✏ Editar Produto</h2>
 
-        <div class="card">
+<div class="content">
 
-            <!-- 🔥 FORM CORRIGIDO -->
-            <form method="POST" action="{{ url_for('editar_produto', id=produto.id) }}">
+    <h2>✏ Editar Produto</h2>
 
-                <input type="text" name="nome" placeholder="Nome do Produto" value="{{ produto.nome }}" required>
+    <div class="card">
 
-                <div class="row">
-                    <input type="number" name="quantidade" placeholder="Quantidade" value="{{ produto.quantidade }}" required>
-                    <input type="number" name="minimo" placeholder="Estoque Mínimo" value="{{ produto.minimo }}">
+        <form method="POST" action="{{ url_for('editar_estoque', id=produto.id) }}">
+
+            <div>
+                <label>Nome do Produto</label>
+                <input type="text" name="nome" value="{{ produto.nome }}" required>
+            </div>
+
+            <div class="row">
+                <div style="flex:1;">
+                    <label>Quantidade</label>
+                    <input type="number" name="quantidade" value="{{ produto.quantidade }}" required>
                 </div>
 
-                <input type="number" step="0.01" name="custo" placeholder="Custo" value="{{ produto.custo }}">
-
-                <div class="row">
-                    <button type="submit">💾 Salvar Alterações</button>
-
-                    <!-- 🔥 BOTÃO VOLTAR MELHORADO -->
-                    <a href="{{ url_for('admin_estoque') }}" class="btn-cancel">⬅ Voltar</a>
+                <div style="flex:1;">
+                    <label>Mínimo</label>
+                    <input type="number" name="minimo" value="{{ produto.minimo }}">
                 </div>
+            </div>
 
-            </form>
+            <div>
+                <label>Custo (R$)</label>
+                <input type="number" step="0.01" name="custo" value="{{ produto.custo }}">
+            </div>
 
-        </div>
+            <div class="actions">
+                <button type="submit">💾 Salvar Alterações</button>
+                <a href="{{ url_for('admin_estoque') }}" class="btn-cancel">⬅ Voltar</a>
+            </div>
+
+        </form>
+
     </div>
+
+</div>
+
 </body>
 </html>
