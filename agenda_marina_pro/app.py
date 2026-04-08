@@ -738,13 +738,21 @@ def editar_estoque(id):
     produto = Estoque.query.get_or_404(id)
 
     if request.method == "POST":
-        produto.nome = request.form.get("nome")
-        produto.quantidade = int(request.form.get("quantidade"))
-        produto.minimo = int(request.form.get("minimo")) if request.form.get("minimo") else 0
-        produto.custo = float(request.form.get("custo")) if request.form.get("custo") else 0.0
-        db.session.commit()
-        flash(f"Produto '{produto.nome}' editado com sucesso!", "sucesso")
-        return redirect(url_for("admin_estoque"))
+        try:
+            produto.nome = request.form.get("nome")
+            produto.quantidade = int(request.form.get("quantidade") or 0)
+            produto.minimo = int(request.form.get("minimo") or 0)
+            produto.custo = float(request.form.get("custo") or 0)
+
+            db.session.commit()
+
+            flash(f"Produto '{produto.nome}' editado com sucesso!", "sucesso")
+            return redirect(url_for("admin_estoque"))
+
+        except Exception as e:
+            print("ERRO:", e)
+            db.session.rollback()
+            return str(e)
 
     return render_template("editar_estoque.html", produto=produto)
 
