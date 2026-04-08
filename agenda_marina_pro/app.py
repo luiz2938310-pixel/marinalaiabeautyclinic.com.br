@@ -622,17 +622,16 @@ def horarios_admin():
 @app.route("/admin/financeiro", methods=["GET", "POST"])
 @login_required
 def financeiro():
+    try:
+        if request.method == "POST":
+            descricao = request.form.get("descricao")
+            valor = request.form.get("valor")
+            tipo = request.form.get("tipo")
 
-    if request.method == "POST":
-        descricao = request.form.get("descricao")
-        valor = request.form.get("valor")
-        tipo = request.form.get("tipo")
+            if not descricao or not valor or not tipo:
+                flash("Preencha todos os campos!", "erro")
+                return redirect(url_for("financeiro"))
 
-        if not descricao or not valor or not tipo:
-            flash("Preencha todos os campos!", "erro")
-            return redirect(url_for("financeiro"))
-
-        try:
             novo = Financeiro(
                 descricao=descricao.strip(),
                 valor=float(valor),
@@ -644,31 +643,15 @@ def financeiro():
             db.session.commit()
 
             flash("Registro adicionado com sucesso!", "sucesso")
+            return redirect(url_for("financeiro"))
 
-        except Exception as e:
-            db.session.rollback()
-            print("ERRO FINANCEIRO:", e)
-            flash("Erro ao salvar registro!", "erro")
-
-        return redirect(url_for("financeiro"))
-
-    mes = request.args.get("mes")
-
-    if mes:
-        try:
-            ano, mes_num = mes.split("-")
-
-            registros = Financeiro.query.filter(
-                extract("year", Financeiro.data) == int(ano),
-                extract("month", Financeiro.data) == int(mes_num)
-            ).order_by(Financeiro.data.desc()).all()
-
-        except:
-            registros = Financeiro.query.order_by(Financeiro.data.desc()).all()
-    else:
         registros = Financeiro.query.order_by(Financeiro.data.desc()).all()
 
-    return render_template("financeiro_admin.html", registros=registros)
+        return render_template("financeiro_admin.html", registros=registros)
+
+    except Exception as e:
+        print("ERRO FINANCEIRO:", e)
+        return str(e)
 
 
 # =========================
@@ -746,11 +729,10 @@ def excluir_estoque(id):
 @app.route("/admin/estoque/editar/<int:id>", methods=["GET", "POST"])
 @login_required
 def editar_estoque(id):
+    try:
+        produto = Estoque.query.get_or_404(id)
 
-    produto = Estoque.query.get_or_404(id)
-
-    if request.method == "POST":
-        try:
+        if request.method == "POST":
             produto.nome = request.form.get("nome")
             produto.quantidade = int(request.form.get("quantidade") or 0)
             produto.minimo = int(request.form.get("minimo") or 0)
@@ -758,15 +740,14 @@ def editar_estoque(id):
 
             db.session.commit()
 
-            flash(f"Produto '{produto.nome}' editado com sucesso!", "sucesso")
+            flash("Produto atualizado!", "sucesso")
             return redirect(url_for("admin_estoque"))
 
-        except Exception as e:
-            print("ERRO AO EDITAR:", e)
-            db.session.rollback()
-            flash("Erro ao atualizar produto.", "erro")
+        return render_template("editar_estoque.html", produto=produto)
 
-    return render_template("editar_estoque.html", produto=produto)
+    except Exception as e:
+        print("ERRO EDITAR:", e)
+        return str(e)
 # =========================
 # EDITAR Calendario 
 # =========================
