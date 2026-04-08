@@ -769,25 +769,31 @@ def excluir_financeiro(id):
 # =========================
 # EDITAR FINANCEIRO
 # =========================
-@app.route("/admin/financeiro/editar/<int:id>", methods=["GET", "POST"])
+@app.route("/admin/estoque/editar/<int:id>", methods=["GET", "POST"])
 @login_required
-def editar_financeiro(id):
-    registro = Financeiro.query.get(id)
-
-    if not registro:
-        flash("Registro não encontrado!", "erro")
-        return redirect(url_for("financeiro"))
+def editar_estoque(id):
+    produto = Estoque.query.get_or_404(id)
 
     if request.method == "POST":
-        registro.descricao = request.form.get("descricao")
-        registro.valor = float(request.form.get("valor"))
-        registro.tipo = request.form.get("tipo")
+        try:
+            produto.nome = request.form.get("nome")
 
-        db.session.commit()
-        flash("Registro editado com sucesso!", "sucesso")
-        return redirect(url_for("financeiro"))
+            # Corrigido (evita erro se vier vazio)
+            produto.quantidade = int(request.form.get("quantidade") or 0)
+            produto.minimo = int(request.form.get("minimo") or 0)
+            produto.custo = float(request.form.get("custo") or 0)
 
-    return render_template("editar_financeiro.html", r=registro)
+            db.session.commit()
+
+            flash(f"Produto '{produto.nome}' editado com sucesso!", "sucesso")
+            return redirect(url_for("admin_estoque"))
+
+        except Exception as e:
+            print("ERRO AO EDITAR ESTOQUE:", e)
+            db.session.rollback()
+            return "Erro interno ao atualizar produto"
+
+    return render_template("editar_estoque.html", produto=produto)
 # =========================
 # EDITAR Calendario 
 # =========================
