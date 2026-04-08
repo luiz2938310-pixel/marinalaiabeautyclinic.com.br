@@ -114,6 +114,15 @@ button:hover{
     transform:translateY(-2px);
     box-shadow:0 5px 20px rgba(239,68,68,0.4);
 }
+
+/* ALERTA */
+.alert{
+    background:#22c55e;
+    padding:10px;
+    border-radius:8px;
+    margin-bottom:10px;
+    text-align:center;
+}
 </style>
 </head>
 
@@ -123,9 +132,19 @@ button:hover{
 
     <h2>✏ Editar Produto</h2>
 
+    <!-- MENSAGENS -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
+
     <div class="card">
 
-        <form method="POST" action="{{ url_for('editar_estoque', id=produto.id) }}">
+        <!-- 🔥 CORRIGIDO AQUI -->
+        <form method="POST" action="{{ url_for('editar_estoque_v2', id=produto.id) }}">
 
             <div>
                 <label>Nome do Produto</label>
