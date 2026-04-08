@@ -207,7 +207,9 @@ tr:hover{
                 <td>{{ p.minimo }}</td>
                 <td>R$ {{ "%.2f"|format(p.custo) }}</td>
                 <td>
-                    <a href="/admin/estoque/editar/{{ p.id }}" class="btn btn-edit">Editar</a>
+                    <<a href="{{ url_for('editar_estoque', id=p.id) }}" class="btn btn-edit">
+    ✏ Editar
+</a>
                     <a href="/admin/estoque/excluir/{{ p.id }}" class="btn btn-del" onclick="return confirm('Excluir produto?')">Excluir</a>
                 </td>
             </tr>
